@@ -1,16 +1,19 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    colorize (0.8.1)
-    curses (1.4.4)
+    chunky_png (1.4.0)
+    rainbow (3.1.1)
+    zlib (3.0.0)
 
 PLATFORMS
   x86_64-darwin-21
   x86_64-darwin-22
+  x86_64-linux
 
 DEPENDENCIES
-  colorize
-  curses
+  chunky_png
+  rainbow
+  zlib
 
 BUNDLED WITH
    2.2.17

@@ -6,7 +6,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 gem 'rainbow'
 
-:development do
+group :development do
   gem 'zlib'
   gem 'chunky_png'
 end
