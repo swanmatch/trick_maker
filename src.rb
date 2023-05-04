@@ -30,8 +30,8 @@ EOS
 
 def hsv_to_rgb(h, s, v)
   h = (h%360)
-  s = (s%101) / 100.0
-  v = (v%101) / 100.0
+  s = (s<100) ? s / 100.0 : 1
+  v = (v<100) ? v / 100.0 : 1
 
   h_i = (h / 60.0).floor % 6
   f = (h / 60.0) - h_i
@@ -65,14 +65,12 @@ end
 h, s, v = 0, 0, 0
 loop do
   if v < 100
-    hsv_to_rgb(h, s, v)
-    puts Rainbow(STR).color(*hsv_to_rgb(h, s, v))
-    v += 5
+    puts "\e[2J\e[H" + Rainbow(STR).color(*hsv_to_rgb(h, s, v))
+    v += 2
+    sleep 0.1
   else
-    puts STR.split("\n").map.with_index{|row, i| row.chars.map.with_index{|c, j| Rainbow(c).color(*hsv_to_rgb(h+i*2+j, s, v))}.join()}.join("\n")
+    puts "\e[2J\e[H" + STR.split("\n").map.with_index{|row, i| row.chars.map.with_index{|c, j| (c != 0)?Rainbow(c).color(*hsv_to_rgb(h+i*2+j, s, v)):c}.join()}.join("\n")
     s += 1 if s < 100
-    h += 10
+    h += 3
   end
-  sleep 0.1
-  puts "\e[2J\e[H"
 end

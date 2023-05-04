@@ -1,3 +1,8 @@
+#### USAGE ####
+# $ ruby trick_maker.rb [input.rb] [image.png] [width=200]
+# ex) $ ruby trick_maker.rb src.rb hoge.png 200
+#     > output dist.rb
+
 require 'zlib'
 require 'base64'
 require 'chunky_png'
@@ -12,10 +17,10 @@ image_filename = ARGV[1]
 image = ChunkyPNG::Image.from_file(image_filename)
 
 # リサイズ処理を実行する
-new_width = 120
+new_width = ARGV[2]? ARGV[2].to_i : 200
 threshold = 0
 scale_factor = new_width.to_f / image.width
-new_height = (image.height * scale_factor / 2).round
+new_height = (image.height * scale_factor / 2.2).round
 resize_image = image.resample_bilinear(new_width, new_height)
 
 str = ''
@@ -28,7 +33,6 @@ while count < comp_code.size do
     row = ''
     (0...resize_image.width).each do |x|
       pixel = ChunkyPNG::Color.to_grayscale_bytes(resize_image[x, y]).first
-      # output_image[x, y] = pixel < threshold ? ChunkyPNG::Color::BLACK : ChunkyPNG::Color::WHITE
       if (pixel < threshold) then
         next if comp_code.size < count
         row += comp_code[count].to_s
@@ -42,7 +46,7 @@ while count < comp_code.size do
   threshold += 1
 end
 
-dist = "require'zlib';eval(Zlib::Inflate.inflate(\"\n" + str.gsub!(/^[\s]*\n/, "").chomp + "\".unpack('m')[0]))"
+dist = "require'zlib';eval(Zlib::Inflate.inflate(\"\n" + str.gsub!(/^[\s]*\n/, "").chomp + "\".unpack('m')[0]))\n"
 puts dist
 puts "threthold is #{threshold}. size is #{count}."
 File.write('dist.rb', dist)
